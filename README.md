@@ -1,6 +1,6 @@
-# Helper Methods
+# Helper Methods 3
 
-The starting point of this project is where we left the ad2-getting-started project at the end of class on Day 1.
+The starting point of this project is a solution to Helper Methods after completing Parts 1 & 2.
 
 ## Setup
 
@@ -8,52 +8,133 @@ The starting point of this project is where we left the ad2-getting-started proj
 bin/setup
 ```
 
-## Write some tests
+## Partial view templates
 
-We're going to be learning a _lot_ of ways to improve our code, while holding functionality constant.
+Partial view templates (or just "partials", for short) are an extremely powerful tool to help us modularize and organize our view templates. Especially once we start adding in styling with Bootstrap, etc, our view files will grow to be hundreds or thousands of lines long, so it becomes increasingly helpful to break them up into partials.
 
-That means we're going to need to do a lot of testing to make sure we didn't break functionality as we evolve our code. Once you get tired of manually clicking through every link, form, etc, consider writing some automated tests to save yourself the trouble.
+### Official docs
 
-Read Sections 1, 2, 4, 5, 6, and 7 of the [Rails Guide on Testing](https://guides.rubyonrails.org/testing.html). These are the kinds of tests that we write most frequently.
+[Here is the official article in the Rails API reference describing all the ways you can use partials.](https://edgeapi.rubyonrails.org/classes/ActionView/PartialRenderer.html) There are lots of powerful options available, but for now we're going to focus on the most frequently used ones.
 
-In this project, we have one fully functional web resource, `movies`. Create a test file, `test/system/movie_test.rb`, and take a stab at writing some System tests in it to lock down the current functionality of the application. For example, try adding a test that checks to make sure the URL `/movies` has an `<h1>` on it containing the copy "List of all movies". Run your tests with:
+### Getting started: static HTML partials
 
+1. Create a partial view template in the same way that you create a regular view template, except that the first letter in the file name _must_ be an underscore. This is how we (and Rails) distinguish partial view templates from full view templates.
+
+For example, create a file called `app/views/zebra/_giraffe.html.erb`. Within it, write the following:
+
+```html
+<h1>Hello from the giraffe partial!</h1>
 ```
-rails test test/system/movie_test.rb
+
+Then, in any of your other view templates, add:
+
+```erb
+<%= render template: "zebra/giraffe" %>
 ```
 
-After you’ve spent 20-30 minutes on it, you’re allowed to look at the example specs in `test/system/example_specs.rb`. You can copy-paste some or all of them into your own test file and run then periodically as you’re doing the rest of the project to ensure you didn’t break anything as we refactor.
+Notice that **we don't include the underscore when referencing the partial** in the `render` method, even though the underscore must be present in the actual filename.
 
-## Walkthrough Video
+You can render the partial as many times as you want:
 
-There's a walkthrough video to go along with this project on Canvas.
+```erb
+<%= render template: "zebra/giraffe" %>
 
-### Clean-ups that we already know how to do
+<hr>
 
- - Anywhere you see the old `Hash` syntax (`:symbol` keys with hash rockets `=>`): switch to [the new `Hash` syntax](https://chapters.firstdraft.com/chapters/787#new-hash-syntax).
- - Anywhere you see [optional curly braces around `Hash` arguments](https://chapters.firstdraft.com/chapters/787#curly-braces-around-hash-arguments): remove them.
- - Where possible, drop `render` statements.
- - When providing keys to `params`, use `Symbol`s. (Unlike with most hashes, you can use `String`s and `Symbol`s interchangeably as keys to `params`.)
+<%= render template: "zebra/giraffe" %>
+```
 
-### Refactor routes
+A more realistic example of putting some static HTML into a partial is extracting a 200 line Bootstrap navbar into `app/views/shared/_navbar.html.erb` and then `render`ing it from within the application layout.
 
- - Re-write routes using more succinct forms of `get`, `post`, `patch`, `delete`, and, ultimately, `resources`.
+### Partials with inputs
 
-### First new helper methods
+Breaking up large templates by putting bits of static HTML into partials is nice, but even better is the ability to dynamically render partials based on varying inputs.
 
- - Replace all references to URLs outside of `config/routes.rb` with route helper methods.
- - Replace all `<a>` elements in view templates with `link_to` methods.
+For example, create a file called `app/views/zebra/_elephant.html.erb`. Within it, write the following:
 
-### Forms in general
+```erb
+<h1>Hello, <%= person %>!</h1>
+```
 
- - Replace all `<form>` elements in view templates with `form_with` methods.
- - Replace all `<input>` elements with `text_field_tag`, `number_field_tag`, `text_area_tag`, etc.
- 
-### Forms specifically for model objects
+Then, in any of your other view templates, try:
 
- - Change the names of inputs so that values in the `params` hash are nested within an inner hash.
- - Assign all of the values at once using ActiveRecord's mass assignment ability via `new` or `update`.
- - Whitelist which attributes you want to allow to be mass assigned from `params` with `params.require(:movie).permit(:title, :description)`.
- - Switch from `form_with(url:)` to `form_with(model:)`
- - Switch from `text_field_tag`, etc; to `form.text_field`, etc.
- - Move form to partial and re-use wherever possible.
+```erb
+<%= render template: "zebra/elephant" %>
+```
+
+When you test it, it will break and complain about an undefined local variable `person`. To fix it, try:
+
+```erb
+<%= render template: "zebra/elephant", locals: { person: "Alice" } %>
+```
+
+Now it becomes more clear why it can be useful to render the same partial multiple times:
+
+```erb
+<%= render template: "zebra/elephant", locals: { person: "Alice" } %>
+
+<hr>
+
+<%= render template: "zebra/elephant", locals: { person: "Bob" } %>
+```
+
+If we think of rendering partials as _calling methods that return HTML_, then the `:locals` option is how we _pass in arguments_ to those methods. This allows us to create powerful, reusable HTML components.
+
+### Practical examples
+
+#### The form
+
+In this application, can you find any ERB that's re-used in multiple templates?
+
+Well, since we evolved to using `form_with model: @movie`, the two forms in `movies/new` and `movies/edit` are exactly the same!
+
+1. Let's extract the common ERB into a template called `app/views/movies/_form.html.erb`.
+1. Then render it from both places with:
+
+    ```erb
+    render template: "movies/form"
+    ```
+    
+If you test it out, you'll notice that it works. However, we're kinda getting lucky here that we named our instance variable the same thing in both actions —— `@movie`. Try making the following variable name changes in `MoviesController`:
+
+```rb
+def new
+  @new_movie = Movie.new # instead of @movie
+end
+
+def edit
+  @the_movie = Movie.find(params.fetch(:id)) # instead of @movie
+end
+```
+
+Now if you test it out, you'll get errors complaining about undefined methods for `nil`, since the `movies/_form` partial expects an instance variable called `@movie` and we're no longer providing it.
+
+So, should we always just use the same exact variable name everywhere? That's not very flexible, and sometimes it's just not possible. Instead, we should use the `:locals` option:
+
+Update the `form` partial to use an arbitrary local variable name, e.g. `foo`, rather than `@movie`:
+
+```erb
+<%= form_with model: foo do |form| %>
+```
+
+If you test it out now, you'll get the expected "undefined local variable `foo`" error.
+
+But then, in `new`:
+
+```erb
+render template: "movies/form", locals: { foo: @new_movie }
+```
+
+And in `edit`:
+
+```erb
+render template: "movies/form", locals: { foo: @the_movie }
+```
+
+If you test it out, everything should be working again. And, it's much better, because the `movies/_form` partial is flexible enough to be called from any template, or multiple times within the same template (e.g. if we wanted to have multiple edit forms on the index page, which is quite common).
+
+So, a rule of thumb: **don't use instance variables within partials**. Instead, prefer to use the `:locals` option and pass in any data that the partial requires, even though it's more verbose to do it that way.
+
+#### An ActiveRecord object
+
+
