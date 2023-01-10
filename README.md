@@ -18,7 +18,7 @@ Partial view templates (or just "partials", for short) are an extremely powerful
 
 ### Getting started: static HTML partials
 
-1. Create a partial view template in the same way that you create a regular view template, except that the first letter in the file name _must_ be an underscore. This is how we (and Rails) distinguish partial view templates from full view templates.
+Create a partial view template in the same way that you create a regular view template, except that the first letter in the file name _must_ be an underscore. This is how we (and Rails) distinguish partial view templates from full view templates.
 
 For example, create a file called `app/views/zebra/_giraffe.html.erb`. Within it, write the following:
 
@@ -28,7 +28,7 @@ For example, create a file called `app/views/zebra/_giraffe.html.erb`. Within it
 
 Then, in any of your other view templates, add:
 
-```erb
+```html
 <%= render template: "zebra/giraffe" %>
 ```
 
@@ -36,7 +36,7 @@ Notice that **we don't include the underscore when referencing the partial** in 
 
 You can render the partial as many times as you want:
 
-```erb
+```html
 <%= render template: "zebra/giraffe" %>
 
 <hr>
