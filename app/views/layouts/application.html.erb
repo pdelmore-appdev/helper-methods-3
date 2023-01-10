@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>VanillaRails</title>
+    <meta charset="utf-8">
+
+    <title>Helper Methods Pt 3</title>
+
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%= render "shared/cdn_assets" %>
+
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>    
   </head>
 
   <body>
-    <div style="color: green;">
-      <%= notice %>
-    </div>
+    <%= render "shared/navbar" %>
 
-    <div style="color: red;">
-      <%= alert %>
+    <div class="container mt-3">
+      <%= render "shared/flash_messages" %>
+
+      <%= yield %>
     </div>
-    
-    <%= yield %>
   </body>
 </html>
