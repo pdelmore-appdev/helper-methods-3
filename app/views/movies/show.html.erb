@@ -1,51 +1,5 @@
-<div>
-  <div>
-    <h1>
-      Movie #<%= @movie.id %> details
-    </h1>
-
-    <div>
-      <div>
-        <%= link_to "Go back", movies_path %>
-      </div>
-
-      <div>
-        <%= link_to "Edit Movie", edit_movie_path(@movie) %>
-      </div>
-
-      <div>
-        <%= link_to "Delete Movie", @movie, method: :delete %>
-      </div>
-    </div>
-
-    <dl>
-      <dt>
-        Title
-      </dt>
-      <dd>
-        <%= @movie.title %>
-      </dd>
-
-      <dt>
-        Description
-      </dt>
-      <dd>
-        <%= @movie.description %>
-      </dd>
-
-      <dt>
-        Created at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@movie.created_at) %> ago
-      </dd>
-
-      <dt>
-        Updated at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@movie.updated_at) %> ago
-      </dd>
-    </dl>
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <%= render partial: "movies/movie_card", locals: { baz: @movie } %>
   </div>
 </div>
