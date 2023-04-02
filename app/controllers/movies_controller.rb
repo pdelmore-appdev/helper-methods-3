@@ -1,4 +1,7 @@
 class MoviesController < ApplicationController
+  before_action :set_movie, only: [ :show, :edit, :update, :destroy ]
+  
+  
   def new
     @new_movie = Movie.new
   end
@@ -14,7 +17,7 @@ class MoviesController < ApplicationController
   end
 
   def show
-    @movie = Movie.find(params.fetch(:id))
+
   end
 
   def create
@@ -31,11 +34,11 @@ class MoviesController < ApplicationController
   end
 
   def edit
-    @the_movie = Movie.find(params.fetch(:id))
+
   end
 
   def update
-    @movie = Movie.find(params.fetch(:id))
+
     
     if @movie.update(movie_params)
       redirect_to @movie, notice: "Movie updated successfully."
@@ -45,7 +48,6 @@ class MoviesController < ApplicationController
   end
 
   def destroy
-    @movie = Movie.find(params.fetch(:id))
 
     @movie.destroy
 
@@ -56,6 +58,11 @@ class MoviesController < ApplicationController
 
 
   private 
+
+
+  def set_movie
+    @movie = Movie.find(params.fetch(:id))
+  end
 
 
   def movie_params
