@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+          <th>Name</th>
       <th>Dob</th>
       <th>Bio</th>
       <th colspan="3"></th>
@@ -14,6 +15,7 @@
   <tbody>
     <% @actors.each do |actor| %>
       <tr>
+              <td><%= actor.name %></td>
         <td><%= actor.dob %></td>
         <td><%= actor.bio %></td>
         <td><%= link_to 'Show', actor %></td>
