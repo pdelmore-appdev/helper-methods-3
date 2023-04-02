@@ -1,6 +1,6 @@
 class MoviesController < ApplicationController
   def new
-    @movie = Movie.new
+    @new_movie = Movie.new
   end
 
   def index
@@ -31,7 +31,7 @@ class MoviesController < ApplicationController
   end
 
   def edit
-    @movie = Movie.find(params.fetch(:id))
+    @the_movie = Movie.find(params.fetch(:id))
   end
 
   def update

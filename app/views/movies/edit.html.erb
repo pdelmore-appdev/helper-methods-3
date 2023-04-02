@@ -1,31 +1,4 @@
 <h1>Edit movie</h1>
 
-<% @movie.errors.full_messages.each do |message| %>
-  <p style="color: red;"><%= message %></p>
-<% end %>
 
-<%= form_with model: @movie do |form| %>
-  <div>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div>
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
-
-    <div>
-    <%= form.label :image_url %>
-    <%= form.text_area :image_url %>
-  </div>
-
-      <div>
-    <%= form.label :director_id %>
-    <%= form.collection_select :director_id, Director.order(:name), :id, :name %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+<%= render partial: "movies/form", locals: { foo: @the_movie }%>
