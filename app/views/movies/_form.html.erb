@@ -19,6 +19,11 @@
   </div>
 
       <div>
+    <%= form.label :released_on %>
+    <%= form.date_select :released_on %>
+  </div>
+
+      <div>
     <%= form.label :director_id %>
     <%= form.collection_select :director_id, Director.order(:name), :id, :name %>
   </div>

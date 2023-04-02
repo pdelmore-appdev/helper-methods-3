@@ -10,72 +10,16 @@
 
 <hr>
 
-<table>
-  <tr>
-    <th>
-      ID
-    </th>
 
-    <th>
-      Title
-    </th>
-
-    <th>
-      Description
-    </th>
-
-    <th>
-Image
-    </th>
-
-        <th>
-      Director
-    </th>
-
-    <th>
-      Created at
-    </th>
-
-    <th>
-      Updated at
-    </th>
-
-    <th>
-    </th>
-  </tr>
-
+<div class="row">
   <% @movies.each do |movie| %>
-  <tr>
-    <td>
-      <%= movie.id %>
-    </td>
+<div class="col-md-3">
 
-    <td>
-      <%= movie.title %>
-    </td>
+<%= render partial: "movies/movie_card", locals: { movie: movie }%>
 
-    <td>
-      <%= movie.description %>
-    </td>
+</div>
 
-    <td>
-      <%= movie.image_url %>
-    </td>
-
-        <td>
-      <%= movie.director_id %>
-    </td>
-
-    <td>
-      <%= time_ago_in_words(movie.created_at) %> ago
-    </td>
-    <td>
-      <%= time_ago_in_words(movie.updated_at) %> ago
-    </td>
-
-    <td>
-      <%= link_to "Show details", movie %>
-    </td>
-  </tr>
   <% end %>
-</table>
+
+</div>
+  
